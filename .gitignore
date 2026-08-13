@@ -11,14 +11,10 @@ __pycache__/
 # macOS
 .DS_Store
 
-# Models
-*.pt
-*.onnx
-
-# Dataset
+# Dataset (raw only)
 data/raw/*
-data/processed/*
-
-# Keep folders
 !data/raw/.gitkeep
+
+data/processed/*
 !data/processed/.gitkeep
+!data/processed/README.md

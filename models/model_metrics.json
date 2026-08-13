@@ -1,0 +1,17 @@
+{
+  "final_test_accuracy": 0.96,
+  "best_valid_accuracy": 0.96,
+  "num_epochs": 10,
+  "num_classes": 6,
+  "class_names": ["angry", "happy", "neutral", "sad", "suprised", "tired"],
+  "test_set_size": 127,
+  "per_class_f1": {
+    "angry": 0.96,
+    "happy": 0.97,
+    "neutral": 0.92,
+    "sad": 0.94,
+    "suprised": 0.97,
+    "tired": 1.00
+  },
+  "known_limitations": "Test set is small (127 images total, 15-34 per class), so accuracy metrics may have high variance."
+}
