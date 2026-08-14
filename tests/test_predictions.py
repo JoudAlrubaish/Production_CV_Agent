@@ -1,15 +1,17 @@
 #perform automated test for invalid uploads 
+from io import BytesIO
 from fastapi.testclient import TestClient
-from backend.app.main import app
+from PIL import Image
 
-#perform automated test for database insertion
 from backend.app.database import SessionLocal
+from backend.app.main import app
 from backend.app.models import Prediction
 from backend.app.services.prediction_service import save_prediction
 
+
 client = TestClient(app)
 
-#1.test for invalid uploads 
+
 def test_invalid_image_type():
     files = {
         "image": (
@@ -25,11 +27,12 @@ def test_invalid_image_type():
     )
 
     assert response.status_code == 400
+
     assert response.json()["detail"] == (
         "Unsupported image type. Use JPEG, PNG, or WEBP."
     )
 
-#2.test for database insertion 
+
 def test_database_insert():
     db = SessionLocal()
 
@@ -76,7 +79,7 @@ def test_database_insert():
 
         db.close()
 
-#3.test for prediction history 
+
 def test_prediction_history():
     db = SessionLocal()
 
@@ -102,7 +105,9 @@ def test_prediction_history():
             inference_result=result,
         )
 
-        response = client.get("/api/v1/predictions")
+        response = client.get(
+            "/api/v1/predictions"
+        )
 
         assert response.status_code == 200
 
@@ -124,4 +129,74 @@ def test_prediction_history():
                 db.delete(stored_prediction)
                 db.commit()
 
+        db.close()
+
+
+def test_valid_prediction():
+    # Create a valid temporary image in memory
+    image = Image.new(
+        "RGB",
+        (224, 224),
+        color="white",
+    )
+
+    buffer = BytesIO()
+
+    image.save(
+        buffer,
+        format="PNG",
+    )
+
+    buffer.seek(0)
+
+    files = {
+        "image": (
+            "test_image.png",
+            buffer.getvalue(),
+            "image/png",
+        )
+    }
+
+    response = client.post(
+        "/api/v1/predict",
+        files=files,
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["id"] is not None
+
+    assert data["predicted_class"] in [
+        "angry",
+        "happy",
+        "neutral",
+        "sad",
+        "suprised",
+        "tired",
+    ]
+
+    assert 0.0 <= data["confidence"] <= 1.0
+
+    assert len(
+        data["top_k_predictions"]
+    ) == 3
+
+    assert data["model_version"] == "1.0.0"
+
+    # Remove test record from PostgreSQL
+    db = SessionLocal()
+
+    try:
+        prediction = db.get(
+            Prediction,
+            data["id"],
+        )
+
+        if prediction is not None:
+            db.delete(prediction)
+            db.commit()
+
+    finally:
         db.close()

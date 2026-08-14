@@ -14,3 +14,10 @@ def test_health():
     assert data["api"] == "healthy"
     assert data["database"] == "healthy"
     assert "model" in data
+
+
+def test_model_loaded():
+    response = client.get("/health")
+
+    assert response.status_code == 200
+    assert response.json()["model"] == "loaded"
