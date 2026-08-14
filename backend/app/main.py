@@ -5,6 +5,10 @@ from backend.app.api.history import router as history_router
 from backend.app.api.stats import router as stats_router
 from backend.app.api.model_info import router as model_info_router
 from backend.app.api.predictions import router as predictions_router
+from backend.app.database import Base, engine
+from backend.app import models
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI( #creates the actual API application
     title="Face Emotion Classification API",
