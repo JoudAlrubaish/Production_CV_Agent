@@ -954,12 +954,11 @@ Potential improvements include:
 
 | Team Member | Main Responsibility |
 |---|---|
-| Student 1 | Dataset preparation, CV model training, evaluation, inference |
-| Student 2 | FastAPI backend, PostgreSQL, API endpoints, backend testing |
-| Student 3 | AI agent, tools, LLM integration, Open WebUI |
-| Student 4 | React frontend, integration, Docker, Dokploy deployment |
+| Lama Alghailan | Dataset preparation, CV model training, evaluation, inference |
+| Joud Alrubaish | FastAPI backend, PostgreSQL, API endpoints, backend testing |
+| Lama Alfreah | AI agent, tools, LLM integration, Open WebUI |
+| Fay Almasoud | React frontend, integration, Docker, Dokploy deployment |
 
-> Replace `Student 1–4` with the team members' names before final submission.
 
 ---
 
