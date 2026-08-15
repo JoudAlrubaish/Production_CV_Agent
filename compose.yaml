@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: cvapp
+      POSTGRES_USER: cvuser
+      POSTGRES_PASSWORD: cvpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://cvuser:cvpassword@postgres:5432/cvapp
+      MODEL_PATH: /app/models/model.pt
+      MODEL_VERSION: "1.0.0"
+    volumes:
+      - ./models:/app/models
+    depends_on:
+      - postgres
+    ports:
+      - "8010:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "3010:80"
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    volumes:
+      - open_webui_data:/app/backend/data
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
+  open_webui_data:
