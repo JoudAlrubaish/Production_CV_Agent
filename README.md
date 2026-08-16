@@ -1,116 +1,67 @@
-# Production Computer Vision Agent
+# Production Computer Vision Agent — EmotionAI
 
-A production-oriented AI system for **facial emotion classification** that combines Computer Vision, FastAPI, PostgreSQL, a React frontend, and an LLM-powered agent.
+EmotionAI is a production-oriented Computer Vision and Agentic AI system for **facial emotion classification**.
 
-The system allows users to upload a facial image, classify the detected emotion, view confidence scores and Top-K predictions, store prediction history, analyze statistics, and interact with the system through an AI agent.
+The project transforms a trained deep-learning model into a complete AI application by integrating:
 
----
-
-## Project Overview
-
-This project demonstrates how a Computer Vision model can be transformed from a trained machine learning model into a complete production-style AI application.
-
-The system integrates:
-
-- Computer Vision model training and inference
-- FastAPI REST API
-- PostgreSQL database
+- PyTorch Computer Vision inference
+- FastAPI REST services
+- PostgreSQL persistence
 - React + Vite frontend
-- LLM-based AI agent
-- Tool calling
-- Open WebUI integration
+- LLM-powered agent
+- Open WebUI
+- Tool / function calling
 - Automated testing
-- Docker-based deployment
+- Docker and Docker Compose
 - Dokploy production deployment
 
-### Supported Emotion Classes
-
-The model currently supports six facial emotion classes:
-
-1. Angry
-2. Happy
-3. Neutral
-4. Sad
-5. Suprised
-6. Tired
-
-> Note: `suprised` follows the original dataset/model label spelling.
+The system allows users to upload facial images, classify the visible facial expression, inspect confidence scores and Top-K predictions, review prediction history and statistics, and interact with the backend using a grounded AI assistant.
 
 ---
 
-## System Architecture
+## 1. Problem Statement
 
-The main application workflow is:
+A trained Computer Vision model alone is not a complete production system.
 
-```text
-User
-  │
-  ▼
-React Frontend
-  │
-  ▼
-FastAPI Backend
-  │
-  ├──────────────► Computer Vision Model
-  │                     │
-  │                     ▼
-  │               Emotion Prediction
-  │
-  ▼
-PostgreSQL Database
-  │
-  ▼
-Prediction History & Statistics
-```
+Real-world AI applications also require:
 
-The AI Agent workflow is:
+- A reusable inference pipeline
+- An API layer
+- Persistent data storage
+- A user interface
+- Monitoring and health checks
+- Automated testing
+- Agentic interaction
+- Containerization
+- Deployment
 
-```text
-User
-  │
-  ▼
-Open WebUI
-  │
-  ▼
-LLM / AI Agent
-  │
-  ▼
-Agent Tools
-  │
-  ▼
-FastAPI Backend
-  │
-  ├──────────────► CV Model
-  │
-  └──────────────► PostgreSQL
-  │
-  ▼
-Tool Result
-  │
-  ▼
-LLM Response
-  │
-  ▼
-User
-```
+EmotionAI was developed to demonstrate this full lifecycle.
 
-More architecture information is available in:
-
-```text
-docs/architecture.md
-```
+The system classifies facial images into one of six expression classes and exposes the model through both a traditional web application and an LLM-powered conversational interface.
 
 ---
 
-## Dataset
+## 2. Objectives
 
-The project uses a facial emotion image-classification dataset from **Roboflow Universe**.
+The main objectives of the project are to:
 
-### Task
+1. Train and evaluate a multi-class facial emotion classifier.
+2. Save the trained model as a reusable production artifact.
+3. Serve model inference through FastAPI.
+4. Store predictions in PostgreSQL.
+5. Build APIs for prediction history, statistics, health, and model information.
+6. Build a responsive React frontend.
+7. Create an LLM-powered agent using real backend tools.
+8. Integrate the agent with Open WebUI.
+9. Validate the system using automated tests.
+10. Package the application with Docker.
+11. Deploy the full system using Dokploy.
 
-Multi-class image classification.
+---
 
-### Classes
+## 3. Supported Emotion Classes
+
+The current model supports six classes:
 
 ```text
 angry
@@ -121,62 +72,172 @@ suprised
 tired
 ```
 
-### Data Processing
+> `suprised` intentionally follows the label spelling used by the original dataset and trained model.
 
-Image preprocessing is performed dynamically during training and inference instead of saving duplicated processed images to disk.
+---
 
-The preprocessing pipeline includes:
+## 4. High-Level Architecture
 
-- Resize with padding
-- 224 × 224 RGB input
-- Conversion to tensor
-- ImageNet normalization
-
-Training augmentation additionally includes:
-
-- Random horizontal flip
-- Color jitter
-
-The dataset exploration notebook is available at:
+### Main Computer Vision Application
 
 ```text
-training/01_dataset_exploration.ipynb
+User
+  │
+  ▼
+React Frontend
+  │
+  ▼
+FastAPI Backend
+  │
+  ▼
+Image Validation
+  │
+  ▼
+MobileNetV3 Inference
+  │
+  ▼
+Prediction Result
+  │
+  ▼
+PostgreSQL
+  │
+  ├────────► Prediction History
+  └────────► Statistics Dashboard
+```
+
+### Agentic AI Workflow
+
+```text
+User
+  │
+  ▼
+Open WebUI
+  │
+  ▼
+LLM
+  │
+  ▼
+Agent Tool Selection
+  │
+  ▼
+FastAPI Backend
+  │
+  ├────────► CV Model
+  └────────► PostgreSQL
+  │
+  ▼
+Grounded Tool Result
+  │
+  ▼
+LLM Response
+  │
+  ▼
+User
+```
+
+More details are available in:
+
+```text
+docs/architecture.md
 ```
 
 ---
 
-## Computer Vision Model
+# 5. Dataset
 
-### Architecture
+The project uses a facial-emotion image-classification dataset from **Roboflow Universe**.
 
-The current model uses:
+Dataset URL:
+
+```text
+<ROBOFLOW_DATASET_URL>
+```
+
+The data is organized into:
+
+```text
+train/
+valid/
+test/
+```
+
+with six class folders.
+
+Example:
+
+```text
+data/raw/
+├── train/
+│   ├── angry/
+│   ├── happy/
+│   ├── neutral/
+│   ├── sad/
+│   ├── suprised/
+│   └── tired/
+│
+├── valid/
+└── test/
+```
+
+Raw data is excluded from Git because datasets can be large and should not normally be versioned directly in the repository.
+
+---
+
+# 6. Image Preprocessing
+
+Images are processed dynamically during training and inference.
+
+The evaluation preprocessing pipeline includes:
+
+- RGB conversion
+- Resize with padding
+- Final input size of 224 × 224
+- Conversion to tensor
+- ImageNet normalization
+
+Training additionally uses:
+
+- Random horizontal flipping
+- Color jitter
+
+The implementation is available in:
+
+```text
+training/transforms.py
+```
+
+---
+
+# 7. Computer Vision Model
+
+The production classifier is based on:
 
 ```text
 MobileNetV3 Small
 ```
 
-with transfer learning using PyTorch.
+using PyTorch and transfer learning.
 
-### Input
+The original ImageNet pretrained architecture is modified so that the final classification layer outputs six classes.
+
+### Model Input
 
 ```text
-RGB Image
-224 × 224 pixels
+RGB image
+224 × 224
 ```
 
-### Output
+### Model Output
 
-The inference pipeline returns:
+The inference service produces:
 
-- Predicted emotion class
-- Confidence score
+- Predicted class
+- Confidence
 - Top-3 predictions
 - Inference latency
 - Model version
 
 ### Model Artifacts
-
-The production model artifacts are stored in:
 
 ```text
 models/
@@ -185,18 +246,18 @@ models/
 └── model_metrics.json
 ```
 
-The inference pipeline loads the model once and reuses it for subsequent prediction requests.
+The model is loaded once by the production inference layer and reused across requests.
 
 ---
 
-## Model Evaluation
+# 8. Model Evaluation
 
-The currently stored evaluation report includes:
+The stored evaluation report contains:
 
-| Metric | Value |
+| Metric | Result |
 |---|---:|
 | Best Validation Accuracy | 96% |
-| Test Accuracy | 96% |
+| Final Test Accuracy | 96% |
 | Number of Classes | 6 |
 | Test Set Size | 127 |
 | Training Epochs | 10 |
@@ -212,32 +273,43 @@ The currently stored evaluation report includes:
 | Suprised | 0.97 |
 | Tired | 1.00 |
 
-> The current test set is relatively small, so the reported evaluation metrics may have high variance. The model is also being re-validated on external images before final production deployment.
+The test set is relatively small, so the metrics should be interpreted with that limitation in mind.
+
+Additional validation during integration also showed that model performance can decrease on some external real-world images that differ from the original dataset distribution.
+
+See:
+
+```text
+docs/model.md
+docs/limitations.md
+```
 
 ---
 
-## Backend API
+# 9. Backend
 
 The backend is implemented using **FastAPI**.
 
-FastAPI provides:
+It provides:
 
-- REST endpoints
-- Request validation
+- Model inference
+- Input validation
+- PostgreSQL integration
+- Prediction persistence
+- History endpoints
+- Statistics
+- Model metadata
+- Health checks
+- Swagger/OpenAPI documentation
 - Error handling
-- Automatic Swagger documentation
-- Integration with the CV model
-- Integration with PostgreSQL
 
-### Local Backend URL
+Local API:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-### Swagger Documentation
-
-When the backend is running:
+Swagger:
 
 ```text
 http://127.0.0.1:8000/docs
@@ -245,46 +317,28 @@ http://127.0.0.1:8000/docs
 
 ---
 
-## API Endpoints
+# 10. API Endpoints
 
-### Health Check
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/health` | API, database, and model health |
+| POST | `/api/v1/predict` | Classify an uploaded image |
+| GET | `/api/v1/predictions` | Retrieve prediction history |
+| GET | `/api/v1/predictions/{id}` | Retrieve one prediction |
+| GET | `/api/v1/stats` | Retrieve prediction statistics |
+| GET | `/api/v1/model` | Retrieve deployed model information |
 
-```http
-GET /health
-```
+Full documentation:
 
-Checks the status of:
-
-- API
-- PostgreSQL database
-- Computer Vision model
-
-Example:
-
-```json
-{
-  "api": "healthy",
-  "database": "healthy",
-  "model": "loaded"
-}
+```text
+docs/api.md
 ```
 
 ---
 
-### Predict Emotion
+# 11. Image Upload Validation
 
-```http
-POST /api/v1/predict
-```
-
-Input:
-
-```text
-multipart/form-data
-image=<image file>
-```
-
-Supported formats:
+The prediction endpoint accepts:
 
 ```text
 JPEG
@@ -292,91 +346,61 @@ PNG
 WEBP
 ```
 
-Maximum upload size:
+Maximum file size:
 
 ```text
 5 MB
 ```
 
-Example response:
+The backend validates:
+
+- MIME type
+- File size
+- Actual image validity
+- Model availability
+- Database persistence
+
+Unsafe filename paths are removed before storing the image name.
+
+---
+
+# 12. Prediction Response
+
+Example:
 
 ```json
 {
   "id": 1,
   "image_name": "face.jpg",
   "predicted_class": "happy",
-  "confidence": 0.94,
+  "confidence": 0.9412,
   "top_k_predictions": [
     {
       "class_name": "happy",
-      "probability": 0.94
+      "probability": 0.9412
     },
     {
       "class_name": "neutral",
-      "probability": 0.04
+      "probability": 0.0418
     },
     {
       "class_name": "sad",
-      "probability": 0.02
+      "probability": 0.017
     }
   ],
   "inference_ms": 31.4,
   "model_version": "1.0.0",
-  "created_at": "2026-08-15T00:00:00"
+  "created_at": "2026-08-15T12:00:00"
 }
 ```
 
 ---
 
-### Prediction History
+# 13. PostgreSQL Database
 
-```http
-GET /api/v1/predictions
-```
+Predictions are persisted using PostgreSQL and SQLAlchemy.
 
-Returns stored predictions ordered by recent predictions.
-
----
-
-### Prediction by ID
-
-```http
-GET /api/v1/predictions/{prediction_id}
-```
-
-Returns a specific prediction stored in PostgreSQL.
-
----
-
-### Prediction Statistics
-
-```http
-GET /api/v1/stats
-```
-
-Returns:
-
-- Total number of predictions
-- Class distribution
-- Average confidence
-
----
-
-### Model Information
-
-```http
-GET /api/v1/model
-```
-
-Returns information about the currently deployed CV model.
-
----
-
-## PostgreSQL Database
-
-Prediction results are persisted in PostgreSQL.
-
-Each prediction stores:
+Each prediction contains:
 
 ```text
 id
@@ -389,19 +413,19 @@ model_version
 created_at
 ```
 
-This enables the application to provide:
+The database supports:
 
 - Prediction history
 - Prediction lookup
+- Total prediction count
 - Class distribution
 - Average confidence
-- Total prediction statistics
 
 ---
 
-## Frontend
+# 14. Frontend
 
-The user interface is built using:
+The frontend is implemented using:
 
 ```text
 React
@@ -410,53 +434,38 @@ JavaScript
 CSS
 ```
 
-### Main Features
-
-The frontend provides:
+Main features include:
 
 - Image upload
 - Image preview
-- Emotion classification
-- Predicted class
+- Analyze button
+- Loading state
+- Error state
+- Prediction class
 - Confidence score
-- Top-3 prediction probabilities
+- Top-K predictions
+- Probability bars
 - Inference time
 - Model version
 - Prediction ID
-- Loading state
-- Error handling
-- Prediction statistics
+- Statistics dashboard
 - Class distribution
-- Prediction history
+- Recent prediction history
 - Responsive layout
 
-### Frontend Workflow
+Frontend documentation:
 
 ```text
-Upload Image
-      ↓
-Preview Image
-      ↓
-Analyze Emotion
-      ↓
-FastAPI Prediction
-      ↓
-Prediction Result
-      ↓
-Statistics Update
-      ↓
-History Update
+docs/frontend.md
 ```
 
 ---
 
-## AI Agent
+# 15. AI Agent
 
-The project includes an LLM-powered agent capable of interacting with the production backend through tools.
+The project includes an LLM-powered agent that interacts with the application through backend tools.
 
-The agent uses an **OpenAI-compatible API client**, allowing it to work with OpenAI or other compatible providers depending on the configured environment variables.
-
-The LLM does not directly access the database or CV model.
+The LLM does not directly query PostgreSQL or access the CV model.
 
 Instead:
 
@@ -467,144 +476,109 @@ Tool Call
  ↓
 FastAPI
  ↓
-CV Model / PostgreSQL
+Model / Database
  ↓
 Real Result
  ↓
 LLM
 ```
 
-This keeps agent responses grounded in real application data.
+This approach keeps operational answers grounded in actual system data.
 
 ---
 
-## Agent Tools
+# 16. Agent Tools
 
-The current agent includes the following tools:
-
-### `classify_image`
-
-Classifies a local JPEG, PNG, or WEBP image using the deployed CV model.
-
-### `get_prediction_history`
-
-Retrieves recent predictions stored in PostgreSQL.
-
-### `get_prediction_by_id`
-
-Retrieves one prediction using its database ID.
-
-### `get_prediction_statistics`
-
-Retrieves total predictions, class distribution, and average confidence.
+The system provides five main tools:
 
 ### `get_model_info`
 
-Retrieves information about the currently deployed CV model.
+Returns information about the deployed Computer Vision model.
 
-The agent is designed not to fabricate prediction or database results when a backend tool fails.
+### `get_prediction_history`
+
+Returns recent predictions stored in PostgreSQL.
+
+### `get_prediction_by_id`
+
+Returns a specific prediction.
+
+### `get_prediction_statistics`
+
+Returns total predictions, class distribution, and average confidence.
+
+### `classify_image`
+
+Classifies an image that is accessible to the agent/Open WebUI server.
 
 ---
 
-## Open WebUI
+# 17. Open WebUI
 
-Open WebUI provides the conversational interface for interacting with the AI agent.
+Open WebUI provides the conversational interface for the agent.
 
-Expected workflow:
+Files:
 
 ```text
-User
- ↓
-Open WebUI
- ↓
-AI Agent
- ↓
-Tool Selection
- ↓
-FastAPI
- ↓
-Real Application Data
- ↓
-Agent Response
+openwebui/
+├── README.md
+├── system_prompt.txt
+└── tools.py
 ```
 
-**Status:** Integration in progress.
+The Open WebUI tools call the real FastAPI backend.
 
-This section will be updated with the final Open WebUI configuration and production URL once integration is completed.
+The system prompt explicitly prevents the LLM from inventing:
 
----
+- Prediction results
+- Confidence values
+- Prediction IDs
+- Statistics
+- Model metadata
 
-## Technology Stack
+If the backend is unavailable, the assistant must report the failure instead of generating fake operational information.
 
-### Computer Vision
+See:
 
-- Python
-- PyTorch
-- Torchvision
-- MobileNetV3
-- Pillow
-- Scikit-learn
-
-### Backend
-
-- FastAPI
-- Uvicorn
-- SQLAlchemy
-- Pydantic
-- Psycopg
-
-### Database
-
-- PostgreSQL
-
-### Frontend
-
-- React
-- Vite
-- JavaScript
-- CSS
-
-### Agent
-
-- OpenAI-compatible API
-- OpenAI Python SDK
-- Tool / Function Calling
-- HTTPX
-
-### Testing
-
-- Pytest
-- HTTPX
-- ESLint
-
-### Deployment
-
-- Docker
-- Docker Compose
-- Dokploy
+```text
+docs/agent_openwebui.md
+```
 
 ---
 
-## Project Structure
+# 18. Technology Stack
+
+| Layer | Technology |
+|---|---|
+| Computer Vision | PyTorch, Torchvision, MobileNetV3 |
+| Image Processing | Pillow |
+| Backend | FastAPI, Uvicorn |
+| ORM | SQLAlchemy |
+| Database | PostgreSQL |
+| Validation | Pydantic |
+| Frontend | React, Vite |
+| Agent | OpenAI-compatible LLM / Tool Calling |
+| Agent HTTP Client | HTTPX |
+| Conversational UI | Open WebUI |
+| Testing | Pytest, HTTPX, ESLint |
+| Containers | Docker |
+| Orchestration | Docker Compose |
+| Web Server | Nginx |
+| Deployment | Dokploy |
+
+---
+
+# 19. Repository Structure
 
 ```text
 Production_CV_Agent/
 │
 ├── agent/
-│   ├── agent.py
-│   ├── prompts.py
-│   ├── tools.py
-│   └── voice.py
 │
 ├── backend/
+│   ├── Dockerfile
 │   └── app/
 │       ├── api/
-│       │   ├── health.py
-│       │   ├── history.py
-│       │   ├── model_info.py
-│       │   ├── predictions.py
-│       │   └── stats.py
-│       │
 │       ├── services/
 │       ├── config.py
 │       ├── database.py
@@ -619,9 +593,17 @@ Production_CV_Agent/
 ├── docs/
 │   ├── api.md
 │   ├── architecture.md
-│   └── demo.md
+│   ├── model.md
+│   ├── frontend.md
+│   ├── agent_openwebui.md
+│   ├── deployment.md
+│   ├── testing.md
+│   ├── demo.md
+│   ├── limitations.md
+│   └── team_contributions.md
 │
 ├── frontend/
+│   ├── Dockerfile
 │   ├── public/
 │   ├── src/
 │   ├── package.json
@@ -633,11 +615,11 @@ Production_CV_Agent/
 │   └── model_metrics.json
 │
 ├── openwebui/
+│   ├── README.md
+│   ├── system_prompt.txt
+│   └── tools.py
 │
 ├── tests/
-│   ├── test_agent.py
-│   ├── test_health.py
-│   └── test_predictions.py
 │
 ├── training/
 │   ├── 01_dataset_exploration.ipynb
@@ -647,7 +629,10 @@ Production_CV_Agent/
 │   ├── train.py
 │   └── transforms.py
 │
+├── compose.yaml
+├── .dockerignore
 ├── .env.example
+├── .gitignore
 ├── pyproject.toml
 ├── uv.lock
 └── README.md
@@ -655,30 +640,34 @@ Production_CV_Agent/
 
 ---
 
-# Local Installation
+# 20. Local Installation
 
 ## Prerequisites
 
 Install:
 
-- Python 3.11+
-- `uv`
-- PostgreSQL
-- Node.js
-- npm
+```text
+Python 3.11+
+uv
+PostgreSQL
+Node.js
+npm
+Docker
+```
 
 ---
 
-## 1. Clone the Repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/JoudAlrubaish/Production_CV_Agent.git
+
 cd Production_CV_Agent
 ```
 
 ---
 
-## 2. Install Python Dependencies
+## Install Python Dependencies
 
 ```bash
 uv sync
@@ -686,15 +675,15 @@ uv sync
 
 ---
 
-## 3. Configure Environment Variables
+## Environment Variables
 
-Copy:
+Create:
 
 ```bash
 cp .env.example .env
 ```
 
-Configure the required variables:
+Example:
 
 ```env
 DATABASE_URL=postgresql+psycopg://USER@localhost:5432/cv_agent_db
@@ -712,25 +701,25 @@ BACKEND_URL=http://localhost:8000
 AGENT_REQUEST_TIMEOUT=20
 ```
 
-Never commit the real `.env` file or API keys to GitHub.
+Never commit real credentials or API keys.
 
 ---
 
-## 4. Create PostgreSQL Database
+# 21. Run Locally
 
-Example:
+## PostgreSQL
+
+Create the local database:
 
 ```bash
 createdb cv_agent_db
 ```
 
-Update `DATABASE_URL` in `.env` based on your PostgreSQL configuration.
-
 ---
 
-## 5. Run FastAPI
+## FastAPI
 
-From the project root:
+From project root:
 
 ```bash
 uv run uvicorn backend.app.main:app --reload
@@ -750,17 +739,17 @@ http://127.0.0.1:8000/docs
 
 ---
 
-## 6. Run the React Frontend
-
-Open another terminal:
+## React Frontend
 
 ```bash
 cd frontend
+
 npm install
+
 npm run dev
 ```
 
-Frontend:
+Default Vite URL:
 
 ```text
 http://localhost:5173
@@ -768,71 +757,130 @@ http://localhost:5173
 
 ---
 
-## 7. Run the Agent
+# 22. Docker
 
-Make sure:
+The backend and frontend each have their own Dockerfile.
 
-1. PostgreSQL is running.
-2. FastAPI is running.
-3. `LLM_API_KEY` is configured.
+The backend container uses Python and `uv`.
 
-Then:
-
-```bash
-uv run python -m agent.agent
-```
-
-Example questions:
+The frontend uses a multi-stage build:
 
 ```text
-What model is currently deployed?
-
-Show me the latest 5 predictions.
-
-What are the prediction statistics?
+Node.js
+   ↓
+Vite production build
+   ↓
+Nginx
 ```
 
 ---
 
-# Testing
+# 23. Docker Compose
 
-## Backend and Agent Tests
+The project contains:
 
-From the project root:
+```text
+compose.yaml
+```
+
+The stack includes:
+
+```text
+postgres
+backend
+frontend
+open-webui
+```
+
+Start:
+
+```bash
+docker compose up --build
+```
+
+Run in background:
+
+```bash
+docker compose up -d --build
+```
+
+Stop:
+
+```bash
+docker compose down
+```
+
+Default mapped ports in the current Compose configuration are:
+
+| Service | Port |
+|---|---|
+| Backend | `8010` |
+| Frontend | `3010` |
+| Open WebUI | `8080` |
+
+---
+
+# 24. Dokploy Deployment
+
+The project is deployed using Dokploy.
+
+Production URLs:
+
+```text
+Frontend:
+<FRONTEND_PRODUCTION_URL>
+
+FastAPI:
+<FASTAPI_PRODUCTION_URL>
+
+Swagger:
+<FASTAPI_PRODUCTION_URL>/docs
+
+Open WebUI:
+<OPEN_WEBUI_PRODUCTION_URL>
+```
+
+Deployment documentation:
+
+```text
+docs/deployment.md
+```
+
+---
+
+# 25. Automated Testing
+
+Run backend and agent tests:
 
 ```bash
 uv run python -m pytest -v
 ```
 
-The automated test suite covers areas including:
+The tests cover areas such as:
 
-- Health endpoint
+- API health
 - Model loading
-- Valid prediction request
-- Invalid image request
+- Valid prediction
+- Invalid image handling
 - Database insertion
 - Prediction history
-- Agent tool behavior
-- Agent backend failure handling
+- Agent tools
+- Backend failure handling
+- Grounding rules
 
 ---
 
-## Frontend Linting
+# 26. Frontend Validation
 
 ```bash
 cd frontend
+
 npm run lint
-```
 
----
-
-## Frontend Production Build
-
-```bash
 npm run build
 ```
 
-The production frontend build is generated in:
+Production files are generated under:
 
 ```text
 frontend/dist/
@@ -840,163 +888,109 @@ frontend/dist/
 
 ---
 
-# Environment Variables
+# 27. Security Considerations
 
-| Variable | Purpose |
+The project includes:
+
+- `.env` excluded from Git
+- Configurable environment variables
+- File type validation
+- Maximum upload size
+- Corrupted-image detection
+- Filename sanitization
+- Configurable CORS
+- Backend-controlled database access
+- Grounded LLM tool usage
+
+For production environments, database passwords and API keys must be stored using secure environment-variable or secret-management mechanisms.
+
+---
+
+# 28. Known Limitations
+
+The current model performs strongly on the held-out dataset but has reduced generalization on some external images.
+
+Important limitations include:
+
+- Small test set
+- Possible dataset/domain shift
+- External-image generalization
+- Facial-expression ambiguity
+- Some class confusion
+- Visible facial expression does not necessarily represent a person's internal emotional state
+
+The system should therefore be considered an educational Computer Vision application rather than a psychological assessment system.
+
+More information:
+
+```text
+docs/limitations.md
+```
+
+---
+
+# 29. Future Improvements
+
+Future development may include:
+
+- More diverse training data
+- External validation datasets
+- Improved data augmentation
+- Class balancing
+- Architecture comparison
+- Confidence calibration
+- Model monitoring
+- Authentication
+- Authorization
+- CI/CD
+- Production observability
+- Centralized logging
+- Improved agent file handling
+- Automated model version management
+
+---
+
+# 30. Team Contributions
+
+| Team Member | Responsibility |
 |---|---|
-| `DATABASE_URL` | PostgreSQL connection |
-| `MODEL_PATH` | Location of CV model |
-| `MODEL_VERSION` | Current model version |
-| `CORS_ORIGINS` | Allowed frontend origins |
-| `LLM_API_KEY` | LLM provider API key |
-| `LLM_BASE_URL` | OpenAI-compatible API URL |
-| `LLM_MODEL` | LLM model |
-| `BACKEND_URL` | FastAPI URL used by agent |
-| `AGENT_REQUEST_TIMEOUT` | Agent HTTP request timeout |
-| `STT_MODEL` | Speech-to-text model |
-| `VOICE_LANGUAGE` | Voice language |
-| `VOICE_SAMPLE_RATE` | Audio sample rate |
-| `VOICE_RECORD_SECONDS` | Voice recording duration |
+| `<STUDENT_1_NAME>` | Dataset, training, evaluation, CV inference |
+| `<STUDENT_2_NAME>` | FastAPI, PostgreSQL, APIs, backend testing |
+| `<STUDENT_3_NAME>` | Agent, LLM integration, tools, Open WebUI |
+| `<STUDENT_4_NAME>` | React frontend, integration, Docker, deployment |
 
----
-
-# Docker Deployment
-
-Docker deployment will package the production components into reproducible containers.
-
-The final Docker Compose configuration is expected to include:
+Detailed contributions:
 
 ```text
-Backend
-Frontend
-PostgreSQL
-Open WebUI
-```
-
-**Status:** In progress.
-
-This section will be updated after Docker integration is completed.
-
----
-
-# Dokploy Deployment
-
-The final system will be deployed using **Dokploy**.
-
-The final production deployment will provide public access to:
-
-- React frontend
-- FastAPI / Swagger API
-- Open WebUI
-
-**Status:** Not deployed yet.
-
-### Production URLs
-
-```text
-Frontend:   TODO
-FastAPI:    TODO
-Swagger:    TODO
-Open WebUI: TODO
+docs/team_contributions.md
 ```
 
 ---
 
-# Security Considerations
-
-The application includes several production-oriented security controls:
-
-- Environment variables are stored outside source code.
-- `.env` is excluded from Git.
-- Image formats are validated.
-- Upload size is restricted.
-- Uploaded filenames are sanitized.
-- CORS is configurable.
-- Database access goes through the backend.
-- Agent tools use real backend endpoints.
-- The LLM is not allowed to fabricate backend results.
-
-Additional production security configuration will be applied during deployment.
-
----
-
-# Known Limitations
-
-- The current dataset test split is relatively small.
-- Evaluation results may therefore have high variance.
-- Generalization to facial images outside the training dataset requires further validation.
-- Open WebUI integration is still being finalized.
-- Docker and Dokploy deployment are not yet completed.
-- Emotion classification predictions should not be interpreted as psychological or medical assessments.
-
----
-
-# Future Improvements
-
-Potential improvements include:
-
-- Expand the training dataset.
-- Improve model generalization.
-- Compare multiple transfer-learning architectures.
-- Improve augmentation and class balancing.
-- Add model monitoring.
-- Add prediction confidence thresholds.
-- Add authentication and authorization.
-- Add CI/CD pipelines.
-- Add more advanced dashboard visualizations.
-- Add production logging and monitoring.
-- Improve agent capabilities.
-- Complete voice interaction support.
-
----
-
-# Team Contributions
-
-| Team Member | Main Responsibility |
-|---|---|
-| Lama Alghailan | Dataset preparation, CV model training, evaluation, inference |
-| Joud Alrubaish | FastAPI backend, PostgreSQL, API endpoints, backend testing |
-| Lama Alfreah | AI agent, tools, LLM integration, Open WebUI |
-| Fay Almasoud | React frontend, integration, Docker, Dokploy deployment |
-
-
----
-
-# Project Status
-
-Current development status:
+# 31. Final System Workflow
 
 ```text
-Computer Vision Model       Under re-validation
-FastAPI Backend             Complete
-PostgreSQL                  Complete
-Automated Tests             Complete
-React Frontend              Complete
-AI Agent Core               Complete
-Open WebUI                  In Progress
-Docker                      Pending
-Docker Compose              Pending
-Dokploy Deployment          Pending
-Final Production Testing    Pending
+DATA
+ ↓
+MODEL TRAINING
+ ↓
+MODEL ARTIFACT
+ ↓
+INFERENCE
+ ↓
+FASTAPI
+ ↓
+POSTGRESQL
+ ↓
+REACT FRONTEND
+ ↓
+AGENT TOOLS
+ ↓
+OPEN WEBUI
+ ↓
+DOCKER
+ ↓
+DOKPLOY
+ ↓
+PRODUCTION
 ```
-
----
-
-# Documentation
-
-Additional documentation:
-
-```text
-docs/api.md
-docs/architecture.md
-docs/demo.md
-models/model_metrics.json
-```
-
----
-
-## Disclaimer
-
-This project was developed for educational purposes as a production-style Computer Vision and Agentic AI system.
-
-Facial emotion classification is probabilistic and should not be used to make medical, psychological, employment, legal, or other high-impact decisions.
