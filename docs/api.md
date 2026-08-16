@@ -44,8 +44,6 @@ Example response:
 }
 ```
 
-The API itself may still be reachable even if the database or model reports an unhealthy state.
-
 ---
 
 # 2. Prediction
@@ -332,22 +330,4 @@ Example:
   ],
   "deployment_status": "loaded"
 }
-```
-
----
-
-# Swagger
-
-FastAPI automatically generates interactive API documentation.
-
-Local:
-
-```text
-http://127.0.0.1:8000/docs
-```
-
-Production:
-
-```text
-<FASTAPI_PRODUCTION_URL>/docs
 ```
