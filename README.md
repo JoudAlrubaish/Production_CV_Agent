@@ -918,10 +918,10 @@ Future development may include:
 
 | Team Member | Responsibility |
 |---|---|
-| `<Lama Alghilan>`  | Dataset, training, evaluation, CV inference |
-| `<Joud Alrubaish>` | FastAPI, PostgreSQL, APIs, backend testing |
-| `<Lama Alfreah>` | Agent, LLM integration, tools, Open WebUI |
-| `<Joud Alrubaish , Lama Alghilan >` | React frontend, integration, Docker, deployment |
+| `Lama Alghailan`  | Dataset, training, evaluation, CV inference |
+| `Joud Alrubaish` | FastAPI, PostgreSQL, APIs, backend testing |
+| `Lama Alfreah` | Agent, LLM integration, tools, Open WebUI |
+| `Joud Alrubaish , Lama Alghailan` | React frontend, integration, Docker, deployment |
 
 
 ---
