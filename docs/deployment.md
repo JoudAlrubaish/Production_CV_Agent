@@ -395,21 +395,4 @@ because `localhost` inside the Open WebUI container refers to that container its
 
 Confirm that the frontend API base URL points to the deployed FastAPI address or reverse proxy.
 
----
 
-# Final Deployment Checklist
-
-```text
-[ ] Containers running
-[ ] Database persistent
-[ ] Model available
-[ ] Health endpoint healthy
-[ ] Frontend accessible
-[ ] Swagger accessible
-[ ] Prediction works
-[ ] Database insertion works
-[ ] Statistics work
-[ ] Open WebUI accessible
-[ ] Agent tools work
-[ ] Secrets protected
-```
