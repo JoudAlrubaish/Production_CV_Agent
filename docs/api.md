@@ -8,12 +8,6 @@ Local:
 http://127.0.0.1:8000
 ```
 
-Production:
-
-```text
-<FASTAPI_PRODUCTION_URL>
-```
-
 Swagger:
 
 ```text
