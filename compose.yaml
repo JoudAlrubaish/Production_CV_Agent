@@ -36,7 +36,7 @@ services:
     volumes:
       - open_webui_data:/app/backend/data
     ports:
-      - "8080:8080"
+      - "8090:8080"
 
 volumes:
   postgres_data:
