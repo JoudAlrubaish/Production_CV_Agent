@@ -19,29 +19,7 @@ The system allows users to upload facial images, classify the visible facial exp
 
 ---
 
-## 1. Problem Statement
-
-A trained Computer Vision model alone is not a complete production system.
-
-Real-world AI applications also require:
-
-- A reusable inference pipeline
-- An API layer
-- Persistent data storage
-- A user interface
-- Monitoring and health checks
-- Automated testing
-- Agentic interaction
-- Containerization
-- Deployment
-
-EmotionAI was developed to demonstrate this full lifecycle.
-
-The system classifies facial images into one of six expression classes and exposes the model through both a traditional web application and an LLM-powered conversational interface.
-
----
-
-## 2. Objectives
+## 1. Objectives
 
 The main objectives of the project are to:
 
@@ -59,7 +37,7 @@ The main objectives of the project are to:
 
 ---
 
-## 3. Supported Emotion Classes
+## 2. Supported Emotion Classes
 
 The current model supports six classes:
 
@@ -76,7 +54,7 @@ tired
 
 ---
 
-## 4. High-Level Architecture
+## 3. High-Level Architecture
 
 ### Main Computer Vision Application
 
@@ -143,14 +121,14 @@ docs/architecture.md
 
 ---
 
-# 5. Dataset
+# 4. Dataset
 
 The project uses a facial-emotion image-classification dataset from **Roboflow Universe**.
 
 Dataset URL:
 
 ```text
-<ROBOFLOW_DATASET_URL>
+<[ROBOFLOW_DATASET_URL](https://universe.roboflow.com/facial-emotion-hvq59/face-emotion-classification)>
 ```
 
 The data is organized into:
@@ -183,7 +161,7 @@ Raw data is excluded from Git because datasets can be large and should not norma
 
 ---
 
-# 6. Image Preprocessing
+# 5. Image Preprocessing
 
 Images are processed dynamically during training and inference.
 
@@ -208,7 +186,7 @@ training/transforms.py
 
 ---
 
-# 7. Computer Vision Model
+# 6. Computer Vision Model
 
 The production classifier is based on:
 
@@ -250,7 +228,7 @@ The model is loaded once by the production inference layer and reused across req
 
 ---
 
-# 8. Model Evaluation
+# 7. Model Evaluation
 
 The stored evaluation report contains:
 
@@ -286,7 +264,7 @@ docs/limitations.md
 
 ---
 
-# 9. Backend
+# 8. Backend
 
 The backend is implemented using **FastAPI**.
 
@@ -317,7 +295,7 @@ http://127.0.0.1:8000/docs
 
 ---
 
-# 10. API Endpoints
+# 9. API Endpoints
 
 | Method | Endpoint | Purpose |
 |---|---|---|
@@ -336,12 +314,12 @@ docs/api.md
 
 ---
 
-# 11. Image Upload Validation
+# 10. Image Upload Validation
 
 The prediction endpoint accepts:
 
 ```text
-JPEG
+JPG
 PNG
 WEBP
 ```
@@ -364,7 +342,7 @@ Unsafe filename paths are removed before storing the image name.
 
 ---
 
-# 12. Prediction Response
+# 11. Prediction Response
 
 Example:
 
@@ -396,7 +374,7 @@ Example:
 
 ---
 
-# 13. PostgreSQL Database
+# 12. PostgreSQL Database
 
 Predictions are persisted using PostgreSQL and SQLAlchemy.
 
@@ -423,7 +401,7 @@ The database supports:
 
 ---
 
-# 14. Frontend
+# 13. Frontend
 
 The frontend is implemented using:
 
@@ -461,7 +439,7 @@ docs/frontend.md
 
 ---
 
-# 15. AI Agent
+# 14. AI Agent
 
 The project includes an LLM-powered agent that interacts with the application through backend tools.
 
@@ -487,7 +465,7 @@ This approach keeps operational answers grounded in actual system data.
 
 ---
 
-# 16. Agent Tools
+# 15. Agent Tools
 
 The system provides five main tools:
 
@@ -513,7 +491,7 @@ Classifies an image that is accessible to the agent/Open WebUI server.
 
 ---
 
-# 17. Open WebUI
+# 16. Open WebUI
 
 Open WebUI provides the conversational interface for the agent.
 
@@ -546,7 +524,7 @@ docs/agent_openwebui.md
 
 ---
 
-# 18. Technology Stack
+# 17. Technology Stack
 
 | Layer | Technology |
 |---|---|
@@ -568,7 +546,7 @@ docs/agent_openwebui.md
 
 ---
 
-# 19. Repository Structure
+# 18. Repository Structure
 
 ```text
 Production_CV_Agent/
@@ -598,9 +576,6 @@ Production_CV_Agent/
 │   ├── agent_openwebui.md
 │   ├── deployment.md
 │   ├── testing.md
-│   ├── demo.md
-│   ├── limitations.md
-│   └── team_contributions.md
 │
 ├── frontend/
 │   ├── Dockerfile
@@ -640,7 +615,7 @@ Production_CV_Agent/
 
 ---
 
-# 20. Local Installation
+# 19. Local Installation
 
 ## Prerequisites
 
@@ -701,11 +676,9 @@ BACKEND_URL=http://localhost:8000
 AGENT_REQUEST_TIMEOUT=20
 ```
 
-Never commit real credentials or API keys.
-
 ---
 
-# 21. Run Locally
+# 20. Run Locally
 
 ## PostgreSQL
 
@@ -757,7 +730,7 @@ http://localhost:5173
 
 ---
 
-# 22. Docker
+# 21. Docker
 
 The backend and frontend each have their own Dockerfile.
 
@@ -775,7 +748,7 @@ Nginx
 
 ---
 
-# 23. Docker Compose
+# 22. Docker Compose
 
 The project contains:
 
@@ -820,7 +793,7 @@ Default mapped ports in the current Compose configuration are:
 
 ---
 
-# 24. Dokploy Deployment
+# 23. Dokploy Deployment
 
 The project is deployed using Dokploy.
 
@@ -848,7 +821,7 @@ docs/deployment.md
 
 ---
 
-# 25. Automated Testing
+# 24. Automated Testing
 
 Run backend and agent tests:
 
@@ -870,7 +843,7 @@ The tests cover areas such as:
 
 ---
 
-# 26. Frontend Validation
+# 25. Frontend Validation
 
 ```bash
 cd frontend
@@ -888,7 +861,7 @@ frontend/dist/
 
 ---
 
-# 27. Security Considerations
+# 26. Security Considerations
 
 The project includes:
 
@@ -902,11 +875,9 @@ The project includes:
 - Backend-controlled database access
 - Grounded LLM tool usage
 
-For production environments, database passwords and API keys must be stored using secure environment-variable or secret-management mechanisms.
-
 ---
 
-# 28. Known Limitations
+# 27. Known Limitations
 
 The current model performs strongly on the held-out dataset but has reduced generalization on some external images.
 
@@ -916,20 +887,13 @@ Important limitations include:
 - Possible dataset/domain shift
 - External-image generalization
 - Facial-expression ambiguity
-- Some class confusion
 - Visible facial expression does not necessarily represent a person's internal emotional state
 
 The system should therefore be considered an educational Computer Vision application rather than a psychological assessment system.
 
-More information:
-
-```text
-docs/limitations.md
-```
-
 ---
 
-# 29. Future Improvements
+# 28. Future Improvements
 
 Future development may include:
 
@@ -950,47 +914,16 @@ Future development may include:
 
 ---
 
-# 30. Team Contributions
+# 29. Team Contributions
 
 | Team Member | Responsibility |
 |---|---|
-| `<STUDENT_1_NAME>` | Dataset, training, evaluation, CV inference |
-| `<STUDENT_2_NAME>` | FastAPI, PostgreSQL, APIs, backend testing |
-| `<STUDENT_3_NAME>` | Agent, LLM integration, tools, Open WebUI |
-| `<STUDENT_4_NAME>` | React frontend, integration, Docker, deployment |
+| `<Lama Alghilan>`  | Dataset, training, evaluation, CV inference |
+| `<Joud Alrubaish>` | FastAPI, PostgreSQL, APIs, backend testing |
+| `<Lama Alfreah>` | Agent, LLM integration, tools, Open WebUI |
+| `<Joud Alrubaish , Lama Alghilan >` | React frontend, integration, Docker, deployment |
 
-Detailed contributions:
-
-```text
-docs/team_contributions.md
-```
 
 ---
 
-# 31. Final System Workflow
 
-```text
-DATA
- ↓
-MODEL TRAINING
- ↓
-MODEL ARTIFACT
- ↓
-INFERENCE
- ↓
-FASTAPI
- ↓
-POSTGRESQL
- ↓
-REACT FRONTEND
- ↓
-AGENT TOOLS
- ↓
-OPEN WEBUI
- ↓
-DOCKER
- ↓
-DOKPLOY
- ↓
-PRODUCTION
-```
