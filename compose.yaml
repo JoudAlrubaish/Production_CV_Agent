@@ -16,6 +16,7 @@ services:
       DATABASE_URL: postgresql+psycopg://cvuser:cvpassword@postgres:5432/cvapp
       MODEL_PATH: /app/models/model.pt
       MODEL_VERSION: "1.0.0"
+      CORS_ORIGINS: http://localhost:3020,http://127.0.0.1:3020
     volumes:
       - ./models:/app/models
     depends_on:
